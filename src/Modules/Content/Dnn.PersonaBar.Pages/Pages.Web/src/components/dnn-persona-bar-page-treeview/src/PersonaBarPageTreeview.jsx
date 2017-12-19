@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import GridCell from "dnn-grid-cell";
 import TextOverflowWrapperNew from "dnn-text-overflow-wrapper-new";
 import { PropTypes } from "prop-types";
-import { DragSource } from 'react-dnd';
 import utils from "utils";
 
 import "./styles.less";
@@ -24,7 +22,7 @@ export class PersonaBarPageTreeview extends Component {
         let newLength = tabpath.split(/\//).length * 2 + 1;
         newLength--;
         let depth = (newLength < maxLength) ? newLength : 1;
-        return (item.name.length > maxLength - depth) ? `${item.name.slice(0, maxLength - depth)}...` : item.name;
+        return (name.length > maxLength - depth) ? `${item.name.slice(0, maxLength - depth)}...` : item.name;
 
     }
 
@@ -152,20 +150,18 @@ export class PersonaBarPageTreeview extends Component {
         let total = listItems.length;
         return listItems.map((item) => {
             const name = this.trimName(item);
-            const shouldShowTooltip = /\.\.\./.test(name);
-            const canManagePage = (e, item, fn) => {
+            const canManagePage = (element , item, fnCallback) => {
                 const message = Localization.get("NoPermissionManagePage");
-                const left = () => {
-                    e ? fn(e, item) : fn(item);
+                const showItem = () => {
+                    element ? fnCallback(element, item) : fnCallback(item);
                 };
-                const right = () => {
+                const showEmptyPage = () => {
                     this.props.setEmptyPageMessage(message);
                 };
-                item.canManagePage ? left() : right();
+                item.canManagePage ? showItem() : showEmptyPage();
             };
 
-            let activate = false;
-            const onDragLeave = (e, item) => {
+            const onDragLeave = (e) => {
                 e.target.classList.remove("list-item-dragover");
             };
             index++;

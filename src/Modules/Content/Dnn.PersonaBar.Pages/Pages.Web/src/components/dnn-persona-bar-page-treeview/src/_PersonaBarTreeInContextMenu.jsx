@@ -4,7 +4,6 @@ import Localization from "localization";
 import { TreeAddPage, TreeAnalytics, TreeCopy, TreeEdit, EyeIcon } from "dnn-svg-icons";
 import Menu from "./InContextMenu/Menu";
 import MenuItem from "./InContextMenu/MenuItem";
-import ReactDOM from "react-dom";
 import cloneDeep from 'lodash/clonedeep';
 import securityService from "../../../services/securityService";
 

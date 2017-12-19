@@ -108,7 +108,6 @@ export class PersonaBarPageTreeviewInteractor extends Component {
                 setActivePage,
                 getPage
             } = this.props;
-            const origin = window.location.origin;
 
             getPage(id)
                 .then((data) => {
@@ -124,7 +123,7 @@ export class PersonaBarPageTreeviewInteractor extends Component {
         this.setState({
             initialCollapse: false
         });
-        let setTreeViewExpanded = null;
+
         this.props._traverse((item, listItem, updateStore) => {
             (item.id === id) ? item.isOpen = !item.isOpen : null;
             updateStore(listItem);
@@ -141,7 +140,6 @@ export class PersonaBarPageTreeviewInteractor extends Component {
     }
 
     onNoPermissionSelection({ id }) {
-        let pageList = null;
         this.props._traverse((item, list, updateStore) => {
             (item.id === id) ? item.selected = true : item.selected = false;
             item.selected ? this.props.onNoPermissionSelection(id) : null;
