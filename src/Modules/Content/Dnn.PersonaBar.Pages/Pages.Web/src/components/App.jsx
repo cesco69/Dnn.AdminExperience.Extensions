@@ -488,7 +488,13 @@ class App extends Component {
                 this.props.changeSelectedPagePath(""); 
                 this.props.getNewPage(parentPage).then(()=>{
                     
+                    this.buildTree(parentPage.id);
+
                     this._traverse((item, list, updateStore) => {
+                        // Find the parent and:
+                        //  - expand tree node
+                        //  - append new page on this parent
+
                         item.selected = false;
                         item.isOpen = true;
                         pageList = list;
