@@ -487,17 +487,16 @@ class App extends Component {
             const onConfirm = () => {
                 this.props.changeSelectedPagePath(""); 
                 this.props.getNewPage(parentPage).then(()=>{
-                    console.log('Parent page',parentPage);
-                    console.log(this.props.selectedPage);
-
+                    
                     this._traverse((item, list, updateStore) => {
                         item.selected = false;
                         item.isOpen = true;
                         pageList = list;
                         runUpdateStore = updateStore;
                     });
-
-                    runUpdateStore(pageList);
+                    const newPageList = pageList.concat(this.props.selectedPage);
+                    console.log('new page list = ',newPageList);
+                    runUpdateStore(newPageList);
 
                     console.log('update tree to reflect new page creation');
                 }); 
@@ -840,10 +839,28 @@ class App extends Component {
         }
     }
 
+    
+
     onChangePageField(key, value) {
         if (this.props.selectedPage[key] !== value) {
             this.props.onChangePageField(key, value);
         }
+        this.updatePageNameOnList(key, value);
+    }
+
+    updatePageNameOnList(key, value) {
+        let pageList = [];
+        let runUpdateStore = {};
+        this._traverse((item, list, updateStore) => {
+            if (item.tabId === 0 && key === "name") {
+                item.name = value;
+                item.selected = true;
+                item.isOpen = true;
+            }
+            pageList = list;
+            runUpdateStore = updateStore;
+        });
+        runUpdateStore(pageList);
     }
 
     onMovePage({ Action, PageId, ParentId, RelatedPageId }) {
@@ -1600,14 +1617,14 @@ class App extends Component {
     }
 
 
+    // TODO: REMOVE THIS TEST METHOD 
     testMethodAddTreeNewPage(){
         console.log('test click ---------------------------');
         console.log('pagelist ',this.props.pageList);
         console.log(this.props.selectedPage);
-
-
-        
     }
+
+
     render() {
 
         const { props } = this;

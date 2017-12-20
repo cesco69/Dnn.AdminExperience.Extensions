@@ -82,7 +82,6 @@ const loadPage = function (dispatch, pageId, callback) {
 const pageActions = {
     getPageList(id) {
         return (dispatch) => PagesService.getPageList(id).then(pageList => {
-
             dispatch({
                 type: PageListActionTypes.SAVE,
                 data: { pageList }
@@ -334,7 +333,8 @@ const pageActions = {
                 pages.selectedPage.tabId === 0 &&
                 !pages.urlChanged &&
                 pages.selectedPage.pageType === "normal") {
-                debouncedUpdateUrlPreview(value, dispatch);
+                // debouncedUpdateUrlPreview(value, dispatch);
+                // this.updatePageListStore();
             }
         };
     },
