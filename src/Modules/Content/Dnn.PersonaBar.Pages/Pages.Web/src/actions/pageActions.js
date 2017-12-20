@@ -254,7 +254,6 @@ const pageActions = {
         };
     },
     createPage(callback) {
-
         return (dispatch, getState) => {
             dispatch({
                 type: ActionTypes.SAVE_PAGE

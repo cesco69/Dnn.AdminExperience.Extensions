@@ -26,6 +26,10 @@ export class PersonaBarPageTreeview extends Component {
 
     }
 
+    // trimName(item) {
+    //     return item.name;
+    // }
+
     render_tree(item, childListItems) {
         const {
             draggedItem,

@@ -461,9 +461,7 @@ class App extends Component {
         this.clearEmptyStateMessage();
         this.selectPageSettingTab(0);
         this.props.clearSelectedPage();
-
         this.props.onLoadAddMultiplePages();
-        
     }
     /**
      * When on edit mode
@@ -478,23 +476,34 @@ class App extends Component {
 
     onAddPage(parentPage) {
         this.clearEmptyStateMessage();
+
         this.selectPageSettingTab(0); 
         const addPage = () => {
             const { props } = this;
             const { selectedPage } = props;
             let runUpdateStore = null;
             let pageList = null;
+        
+            const onConfirm = () => {
+                this.props.changeSelectedPagePath(""); 
+                this.props.getNewPage(parentPage).then(()=>{
+                    console.log('Parent page',parentPage);
+                    console.log(this.props.selectedPage);
 
-            this._traverse((item, list, updateStore) => {
-                item.selected = false;
-                pageList = list;
-                runUpdateStore = updateStore;
-            });
+                    this._traverse((item, list, updateStore) => {
+                        item.selected = false;
+                        item.isOpen = true;
+                        pageList = list;
+                        runUpdateStore = updateStore;
+                    });
 
-            runUpdateStore(pageList);
-            const onConfirm = () => { this.props.changeSelectedPagePath(""); this.props.getNewPage(parentPage); };
+                    runUpdateStore(pageList);
+
+                    console.log('update tree to reflect new page creation');
+                }); 
+            };
+
             if (selectedPage && selectedPage.tabId !== 0 && props.selectedPageDirty) {
-
                 utils.confirm(
                     Localization.get("CancelWithoutSaving"),
                     Localization.get("Close"),
@@ -766,24 +775,25 @@ class App extends Component {
 
     _traverse(comparator, pageListCopy) {
         let listItems = pageListCopy || JSON.parse(JSON.stringify(this.props.pageList));
+        
         const cachedChildListItems = [];
         cachedChildListItems.push(listItems);
+
         const condition = cachedChildListItems.length > 0;
+        const exit = () => null;
 
         const loop = () => {
             const childItem = cachedChildListItems.length ? cachedChildListItems.shift() : null;
-            const left = () => childItem.forEach(item => {
+            const fillTreeWithChilds = () => childItem.forEach(item => {
                 comparator(item, listItems, (pageList) => this.props.updatePageListStore(pageList));
                 Array.isArray(item.childListItems) ? cachedChildListItems.push(item.childListItems) : null;
                 condition ? loop() : exit();
             });
-            const right = () => null;
-            childItem ? left() : right();
+            childItem ? fillTreeWithChilds() : exit();
         };
-
-        const exit = () => null;
-
+        
         loop();
+
         return;
     }
 
@@ -1589,6 +1599,15 @@ class App extends Component {
             });
     }
 
+
+    testMethodAddTreeNewPage(){
+        console.log('test click ---------------------------');
+        console.log('pagelist ',this.props.pageList);
+        console.log(this.props.selectedPage);
+
+
+        
+    }
     render() {
 
         const { props } = this;
@@ -1608,6 +1627,7 @@ class App extends Component {
                                 <div> 
                                     <Button type="primary" disabled={ this.onEditMode() } size="large" onClick={this.onAddPage.bind(this)}>{Localization.get("AddPage")}</Button>
                                     <Button type="secondary" disabled={ this.onEditMode() } size="large" onClick={this.onAddMultiplePage.bind(this)}>{Localization.get("AddMultiplePages")}</Button>
+                                    <Button type="secondary" size="large" onClick={this.testMethodAddTreeNewPage.bind(this)} >This is a test</Button>
                                 </div>
                             }
                             { 
