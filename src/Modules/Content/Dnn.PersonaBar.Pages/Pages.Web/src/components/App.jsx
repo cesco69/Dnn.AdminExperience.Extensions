@@ -486,25 +486,38 @@ class App extends Component {
         
             const onConfirm = () => {
                 this.props.changeSelectedPagePath(""); 
-                this.props.getNewPage(parentPage).then(()=>{
+                this.props.getNewPage(parentPage).then((data)=>{
                     
-                    this.buildTree(parentPage.id);
+                    if (parentPage && parentPage.id){
+                        this.props.getChildPageList(parentPage.id)
+                        .then(pageChildItems => {
+                            this._traverse((item, list, update) => {
+                                const updateChildItems = () => {
+                                    const newPageChildItems = pageChildItems.concat(this.props.selectedPage);
 
-                    this._traverse((item, list, updateStore) => {
-                        // Find the parent and:
-                        //  - expand tree node
-                        //  - append new page on this parent
-
-                        item.selected = false;
-                        item.isOpen = true;
-                        pageList = list;
-                        runUpdateStore = updateStore;
-                    });
-                    const newPageList = pageList.concat(this.props.selectedPage);
-                    console.log('new page list = ',newPageList);
-                    runUpdateStore(newPageList);
-
-                    console.log('update tree to reflect new page creation');
+                                    item.childListItems = newPageChildItems;
+                                    item.isOpen = true;
+                                    item.hasChildren = true;
+                                    update(list);
+                                };
+                                const updateList = () => { update(list); };
+                                // (pageChildItems.length > 0 && item.id === pageChildItems[0].parentId) ? updateChildItems() : updateList();
+                                updateChildItems();
+                            });
+                        });
+                    } else {
+                        this._traverse((item, list, updateStore) => {
+                            // Find the parent and:
+                            //  - expand tree node
+                            //  - append new page on this parent
+                            item.selected = false;
+                            pageList = list;
+                            runUpdateStore = updateStore;
+                        });
+                        const newPageList = pageList.concat(this.props.selectedPage);
+    
+                        runUpdateStore(newPageList);
+                    }
                 }); 
             };
 
@@ -855,18 +868,14 @@ class App extends Component {
     }
 
     updatePageNameOnList(key, value) {
-        let pageList = [];
-        let runUpdateStore = {};
         this._traverse((item, list, updateStore) => {
             if (item.tabId === 0 && key === "name") {
                 item.name = value;
                 item.selected = true;
                 item.isOpen = true;
+                updateStore(list);
             }
-            pageList = list;
-            runUpdateStore = updateStore;
         });
-        runUpdateStore(pageList);
     }
 
     onMovePage({ Action, PageId, ParentId, RelatedPageId }) {
