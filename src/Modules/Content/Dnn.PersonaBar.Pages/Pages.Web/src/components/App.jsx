@@ -487,7 +487,6 @@ class App extends Component {
             const onConfirm = () => {
                 this.props.changeSelectedPagePath(""); 
                 this.props.getNewPage(parentPage).then((data)=>{
-                    
                     if (parentPage && parentPage.id){
                         this.props.getChildPageList(parentPage.id)
                         .then(pageChildItems => {
@@ -500,22 +499,15 @@ class App extends Component {
                                     item.hasChildren = true;
                                     update(list);
                                 };
-                                const updateList = () => { update(list); };
-                                // (pageChildItems.length > 0 && item.id === pageChildItems[0].parentId) ? updateChildItems() : updateList();
-                                updateChildItems();
+                                (item.id === parentPage.id) ? updateChildItems() : null;
                             });
                         });
                     } else {
                         this._traverse((item, list, updateStore) => {
-                            // Find the parent and:
-                            //  - expand tree node
-                            //  - append new page on this parent
-                            item.selected = false;
                             pageList = list;
                             runUpdateStore = updateStore;
                         });
-                        const newPageList = pageList.concat(this.props.selectedPage);
-    
+                        const newPageList = pageList.concat(this.props.selectedPage);    
                         runUpdateStore(newPageList);
                     }
                 }); 
@@ -857,8 +849,6 @@ class App extends Component {
             setNoPermissionState();
         }
     }
-
-    
 
     onChangePageField(key, value) {
         if (this.props.selectedPage[key] !== value) {
