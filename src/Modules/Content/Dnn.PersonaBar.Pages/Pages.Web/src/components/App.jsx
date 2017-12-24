@@ -1,5 +1,6 @@
 
 import React, { Component, PropTypes } from "react";
+import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PersonaBarPageHeader from "dnn-persona-bar-page-header";
@@ -552,6 +553,8 @@ class App extends Component {
             } else {
                 onConfirm();
             }
+            //Set focus on name
+            ReactDOM.findDOMNode(this).querySelector("#name").focus();        
         };
 
         const noPermission = () => this.setEmptyStateMessage("You do not have permission to add a child page to this parent");
@@ -1651,15 +1654,6 @@ class App extends Component {
             });
     }
 
-
-    // TODO: REMOVE THIS TEST METHOD 
-    testMethodAddTreeNewPage(){
-        console.log('test click ---------------------------');
-        console.log('pagelist ',this.props.pageList);
-        console.log(this.props.selectedPage);
-    }
-
-
     render() {
 
         const { props } = this;
@@ -1679,7 +1673,6 @@ class App extends Component {
                                 <div> 
                                     <Button type="primary" disabled={ this.onEditMode() } size="large" onClick={this.onAddPage.bind(this)}>{Localization.get("AddPage")}</Button>
                                     <Button type="secondary" disabled={ this.onEditMode() } size="large" onClick={this.onAddMultiplePage.bind(this)}>{Localization.get("AddMultiplePages")}</Button>
-                                    <Button type="secondary" size="large" onClick={this.testMethodAddTreeNewPage.bind(this)} >This is a test</Button>
                                 </div>
                             }
                             { 
