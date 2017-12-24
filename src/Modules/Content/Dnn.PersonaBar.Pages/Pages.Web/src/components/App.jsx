@@ -493,7 +493,6 @@ class App extends Component {
         this.props.clearSelectedPage();
         this.props.onLoadAddMultiplePages();
     }
-
     /**
      * When on edit mode
      */
