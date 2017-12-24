@@ -1,6 +1,5 @@
 
 import React, { Component, PropTypes } from "react";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PersonaBarPageHeader from "dnn-persona-bar-page-header";
@@ -430,7 +429,7 @@ class App extends Component {
 
     _removePageFromTree(parentId) {
         this._traverse((item, list, updateStore) => {
-            if (item.id === parentId) {
+            if (item.id === parentId && parentId !== undefined) {
                 let itemIndex = null;
                 item.childCount--;
                 (item.childCount === 0) ? item.isOpen = false : null;
@@ -445,7 +444,12 @@ class App extends Component {
                 item.childListItems = [...arr1, ...arr2];
                 updateStore(list);
             }
+            if (parentId === undefined && item.tabId !== undefined) {
+                const newPageList = list.slice(0,list.length-1);
+                updateStore(newPageList);
+            }
         });
+
 
     }
 
